@@ -1,6 +1,7 @@
 package aliafroozi.onlineShop.models.person
 
 import aliafroozi.onlineShop.models.invoice.Invoice
+import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.*
 
 @Entity
@@ -9,15 +10,16 @@ data class User(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id : Long = 0,
-    var userName : String,
-    var password : String,
+    var id: Long = 0,
+    var userName: String = "",
+    var password: String = "",
 
 
     @OneToOne
     @JoinColumn(name = "person_id")
-    var person : Person? = null,
+    var person: Person? = null,
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
-    var invoices : Set<Invoice>? = null
+    var invoices: Set<Invoice>? = null
 )

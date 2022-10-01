@@ -9,13 +9,22 @@ import org.springframework.stereotype.Service
 class PersonService  {
 
     @Autowired
-    lateinit var repository : PersonRepo
+    private lateinit var repository : PersonRepo
 
-    private fun insert(Person: Person): Person {
-        return repository.save(Person)
+    fun insert(person: Person?): Person {
+        if (person == null)
+            throw Exception("person is null")
+        if (person.firstName.isEmpty())
+            throw Exception("firstName is null")
+        if (person.lastName.isEmpty())
+            throw Exception("lastName is null")
+        if (person.phone.isEmpty())
+            throw Exception("phone is null")
+
+        return repository.save(person)
     }
 
-    private fun update(Person: Person): Person? {
+     fun  update(Person: Person): Person? {
         val data = getById(Person.id)
         if (data == null)
             return null

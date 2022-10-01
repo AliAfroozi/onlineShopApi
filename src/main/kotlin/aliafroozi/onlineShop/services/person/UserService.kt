@@ -1,31 +1,50 @@
 package aliafroozi.onlineShop.services.person
 
+import aliafroozi.onlineShop.models.person.Person
 import aliafroozi.onlineShop.models.person.User
 import aliafroozi.onlineShop.repositories.person.UserRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class UserService {
+class  UserService {
 
     @Autowired
     lateinit var repository: UserRepo
+    @Autowired
+    lateinit var personService: PersonService
 
-    fun insert(User: User): User {
-        return repository.save(User)
+    fun insert(user: User): User {
+        if (user.userName.isEmpty())
+            throw Exception("please enter username")
+        if (user.password.isEmpty())
+            throw Exception("please enter password")
+        personService.insert(user.person)
+
+        return repository.save(user)
     }
 
-     fun update(user: User): User? {
-        val data = getById(user.id)
-        if (data == null)
-            return null
-        else{
-            data.password = user.password
-            return repository.save(data)
-        }
+    fun update(user: User): User? {
+        val data = getById(user.id) ?: return null
+        personService.update(user.person!!)
+        data.password = ""
+        return repository.save(data)
     }
 
-    private fun getById(UserId: Long): User? {
+    fun changePassword(user: User, repeatPass: String): User? {
+        val data = getById(user.id) ?: return null
+        if (user.password.isEmpty())
+            throw Exception("password is empty")
+        if (user.password != repeatPass)
+            throw Exception("password is not match with repeat pass ")
+        data.password = user.password
+        val saveData = repository.save(data)
+        saveData.password = ""
+
+        return saveData
+    }
+
+    fun getById(UserId: Long): User? {
         val data = repository.findById(UserId)
         if (data.isEmpty)
             return null
@@ -33,12 +52,17 @@ class UserService {
             return data.get()
     }
 
-     fun delete(UserId: Long): Boolean {
+    fun delete(UserId: Long): Boolean {
         repository.deleteById(UserId)
         return true
     }
 
-    fun getByUsernameAndPass(username: String , password : String): User? {
-        return repository.findFirstByUserNameAndPassword(username , password)
+    fun getByUsernameAndPass(username: String, password: String): User? {
+        if (username.isEmpty())
+            throw Exception("username is empty")
+        if (password.isEmpty())
+            throw Exception("password is empty")
+        return repository.findFirstByUserNameAndPassword(username, password)
+
     }
 }

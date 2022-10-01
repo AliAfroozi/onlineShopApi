@@ -2,6 +2,7 @@ package aliafroozi.onlineShop.services.invoices
 
 import aliafroozi.onlineShop.models.invoice.InvoiceItems
 import aliafroozi.onlineShop.repositories.invoices.InvoiceItemsRepo
+import aliafroozi.onlineShop.services.products.ProductService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -9,10 +10,24 @@ import org.springframework.stereotype.Service
 class InvoiceItemsService {
 
     @Autowired
-    lateinit var repository: InvoiceItemsRepo
+    private lateinit var repository: InvoiceItemsRepo
 
-    fun insert(  InvoiceItems:   InvoiceItems): InvoiceItems {
-        return repository.save(  InvoiceItems)
+    @Autowired
+    lateinit var productService: ProductService
+
+    fun insert(  invoiceItems:   InvoiceItems): InvoiceItems {
+        if (invoiceItems.quantity<=0)
+            throw Exception("invalid invoiceItem quantity")
+        if( invoiceItems.product == null)
+            throw Exception("product is null")
+        if (invoiceItems.product!!.id < 0 || invoiceItems.product!!.id == null )
+            throw Exception("product id is not valid")
+
+
+        val productPrice = productService.getPriceById(invoiceItems.product!!.id)
+        invoiceItems.unitPrice = productPrice.toString()
+
+        return repository.save(invoiceItems)
     }
 
     fun getById(  InvoiceItemsId: Long):   InvoiceItems? {

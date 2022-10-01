@@ -11,12 +11,12 @@ data class Blog(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id : Long = 0,
+    var id: Long = 0,
 
-    var image : String,
-    var title : String,
-    var subTitle: String,
-    var description : String,
-    var visitCount : Int ,
-    var addDate : String
+    var image: String = "",
+    var title: String = "",
+    var subTitle: String = "",
+    var description: String = "",
+    var visitCount: Int =0,
+    var addDate: String = ""
 )

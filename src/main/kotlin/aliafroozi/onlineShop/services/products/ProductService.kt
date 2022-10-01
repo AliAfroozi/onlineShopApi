@@ -1,8 +1,11 @@
 package aliafroozi.onlineShop.services.products
 
+import aliafroozi.onlineShop.models.otherContent.Blog
 import aliafroozi.onlineShop.models.product.Product
 import aliafroozi.onlineShop.repositories.products.ProductRepo
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,11 +22,10 @@ class ProductService {
         val data = getById(Product.id)
         if (data == null)
             return null
-        else{
+        else {
             data.image = Product.image
             data.title = Product.title
-            data.description= Product.description
-            data.size = Product.size
+            data.description = Product.description
             data.colors = Product.colors
             return repository.save(data)
         }
@@ -37,8 +39,17 @@ class ProductService {
             return data.get()
     }
 
+    fun getPriceById(ProductId: Long): Long? {
+        return repository.findFirstPriceById(ProductId)
+    }
+
     fun getAll(): List<Product> {
         return repository.findAll()
+    }
+
+    fun getAllPaged(pageIndex: Int, pageSize: Int): List<Product> {
+        val pageRequest = PageRequest.of(pageIndex, pageSize, Sort.by("id"))
+        return repository.findAll(pageRequest).toList()
     }
 
     private fun delete(ProductId: Long): Boolean {
@@ -50,7 +61,7 @@ class ProductService {
         return repository.findTop6ByOrderByAddDateDesc()
     }
 
-    fun getPopularProducts() : List<Product>{
+    fun getPopularProducts(): List<Product> {
         return repository.findTop6ByOrderByVisitCountDesc()
     }
 

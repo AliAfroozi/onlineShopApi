@@ -1,5 +1,6 @@
 package aliafroozi.onlineShop.models.person
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.*
 
 @Entity
@@ -7,14 +8,15 @@ class Person(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id : Long = 0,
-    var firstName : String,
-    var lastName : String,
-    var address : String,
-    var phone : String,
-    var postalCode : String,
+    var id: Long = 0,
+    var firstName: String = "",
+    var lastName: String = "",
+    var address: String = "",
+    var phone: String = "",
+    var postalCode: String = "",
 
+    @JsonIgnore
     @OneToOne(mappedBy = "person")
-    val user : User? = null
+    val user: User? = null
 
 )

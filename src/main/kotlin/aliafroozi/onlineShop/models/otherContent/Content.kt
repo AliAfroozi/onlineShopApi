@@ -9,8 +9,8 @@ import javax.persistence.Id
 data class Content(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id : Long = 0,
+    var id: Long = 0,
 
-    var title : String,
-    var description : String
+    var title: String = "",
+    var description: String = ""
 )

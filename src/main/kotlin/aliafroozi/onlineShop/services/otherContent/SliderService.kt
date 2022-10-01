@@ -11,7 +11,7 @@ class SliderService {
     @Autowired
     lateinit var repository: SliderRepo
 
-    private fun insert(slider: Slider): Slider {
+    fun insert(slider: Slider): Slider {
         return repository.save(slider)
     }
 
