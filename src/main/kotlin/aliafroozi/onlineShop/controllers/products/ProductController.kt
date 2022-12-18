@@ -2,7 +2,7 @@ package aliafroozi.onlineShop.controllers.products
 
 import aliafroozi.onlineShop.models.product.Product
 import aliafroozi.onlineShop.services.products.ProductService
-import aliafroozi.onlineShop.utils.NotFoundException
+import aliafroozi.onlineShop.utils.exceptions.NotFoundException
 import aliafroozi.onlineShop.utils.ServiceResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

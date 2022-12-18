@@ -1,29 +1,35 @@
 package aliafroozi.onlineShop.controllers.person
 
+import aliafroozi.onlineShop.config.JwtTokenUtil
 import aliafroozi.onlineShop.models.person.User
 import aliafroozi.onlineShop.services.person.UserService
-import aliafroozi.onlineShop.utils.NotFoundException
+import aliafroozi.onlineShop.utils.exceptions.NotFoundException
 import aliafroozi.onlineShop.utils.ServiceResponse
+import aliafroozi.onlineShop.utils.UserUtil.Companion.getCurrentUsernameFromToken
 import aliafroozi.onlineShop.viewModels.UserViewModel
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("api/user")
 class UserController {
 
+
+
     @Autowired
     lateinit var service: UserService
+
+    @Autowired
+    private lateinit var jwtUtil : JwtTokenUtil
 
 
     @PostMapping("/register")
     fun addUser(@RequestBody userViewModel: UserViewModel): ServiceResponse<User> {
         return try {
             val data = service.insert(userViewModel.convertToUser())
-            if (data == null)
-                throw NotFoundException("user not found") else
-                ServiceResponse(data = listOf(data), status = HttpStatus.OK)
+            ServiceResponse(data = listOf(data), status = HttpStatus.OK)
         } catch (e: NotFoundException) {
             ServiceResponse(message = "${e.message}", status = HttpStatus.NOT_FOUND)
         } catch (e: Exception) {
@@ -32,9 +38,10 @@ class UserController {
     }
 
     @PutMapping("/update")
-    fun updateUser(@RequestBody userViewModel: UserViewModel): ServiceResponse<User> {
+    fun updateUser(@RequestBody userViewModel: UserViewModel , request : HttpServletRequest ): ServiceResponse<User> {
         return try {
-            val data = service.update(userViewModel.convertToUser())
+            val currentUser = getCurrentUsernameFromToken(jwtUtil , request)
+            val data = service.update(userViewModel.convertToUser() , currentUser)
             if (data == null)
                 throw NotFoundException("user not found") else
                 ServiceResponse(data = listOf(data), status = HttpStatus.OK)
@@ -45,13 +52,20 @@ class UserController {
         }
     }
 
+
+
     @PutMapping("/changePassword")
-    fun changePass(@RequestBody userViewModel: UserViewModel): ServiceResponse<User> {
+    fun changePass(@RequestBody userViewModel: UserViewModel , request: HttpServletRequest): ServiceResponse<UserViewModel> {
         return try {
-            val data = service.changePassword(userViewModel.convertToUser() , userViewModel.repeatPass)
+            val currentUser = getCurrentUsernameFromToken(jwtUtil , request)
+            val data = service.changePassword(userViewModel.convertToUser() , userViewModel.oldPassword ,  userViewModel.repeatPass , currentUser)
             if (data == null)
-                throw NotFoundException("user not found") else
-                ServiceResponse(data = listOf(data), status = HttpStatus.OK)
+                throw NotFoundException("user not found") else{
+                val vm = UserViewModel(data)
+                vm.token  = jwtUtil.generateToken(vm)
+                ServiceResponse(data = listOf(vm), status = HttpStatus.OK)
+
+            }
         } catch (e: NotFoundException) {
             ServiceResponse(message = "${e.message}", status = HttpStatus.NOT_FOUND)
         } catch (e: Exception) {
@@ -60,12 +74,17 @@ class UserController {
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody userViewModel: UserViewModel): ServiceResponse<User> {
+    fun login(@RequestBody userViewModel: UserViewModel): ServiceResponse<UserViewModel> {
         return try {
             val data = service.getByUsernameAndPass(userViewModel.userName , userViewModel.password)
+
             if (data == null)
-                throw NotFoundException("user not found") else
-                ServiceResponse(data = listOf(data), status = HttpStatus.OK)
+                throw NotFoundException("user not found") else{
+                val vm = UserViewModel(data)
+                vm.token = jwtUtil.generateToken(vm)
+                ServiceResponse(data = listOf(vm), status = HttpStatus.OK)
+            }
+
         } catch (e: NotFoundException) {
             ServiceResponse(message = "${e.message}", status = HttpStatus.NOT_FOUND)
         } catch (e: Exception) {
@@ -74,10 +93,11 @@ class UserController {
     }
 
 
-    @GetMapping("/{userId}")
-    fun getById(@PathVariable userId: Long): ServiceResponse<User> {
+    @GetMapping("")
+    fun getByUsername(@PathVariable username: String , request: HttpServletRequest): ServiceResponse<User> {
         return try {
-            val data = service.getById(userId)
+            val currentUser = getCurrentUsernameFromToken(jwtUtil , request)
+            val data = service.getByUsername(currentUser)
             if (data == null)
                 throw NotFoundException("user not found") else
                 ServiceResponse(data = listOf(data), status = HttpStatus.OK)
@@ -87,7 +107,4 @@ class UserController {
             ServiceResponse(message = "${e.message}", status = HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
-
-
-
 }

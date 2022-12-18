@@ -25,6 +25,21 @@ dependencies {
 
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.postgresql:postgresql")
+
+	// https://mvnrepository.com/artifact/com.google.code.gson/gson
+	implementation("com.google.code.gson:gson:2.9.1")
+
+	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+	implementation("io.jsonwebtoken:jjwt:0.9.1")
+
+	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+	implementation("io.springfox:springfox-swagger2:3.0.0")
+
+	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+	implementation("io.springfox:springfox-swagger-ui:3.0.0")
+
+
+
 }
 
 tasks.withType<KotlinCompile> {
