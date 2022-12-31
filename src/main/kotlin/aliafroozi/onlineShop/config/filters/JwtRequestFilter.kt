@@ -36,6 +36,9 @@ class JwtRequestFilter : Filter {
         containsExcludeUrls.add("/api/content")
         containsExcludeUrls.add("/api/slider")
         containsExcludeUrls.add("/api/productCategory")
+        containsExcludeUrls.add("api/swagger-ui")
+        containsExcludeUrls.add("/swagger-ui")
+        containsExcludeUrls.add("/swagger-ui/")
     }
 
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {

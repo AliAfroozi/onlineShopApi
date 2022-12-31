@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.regex.Pattern.compile
 
 plugins {
 	id("org.springframework.boot") version "2.7.3"
@@ -39,13 +40,16 @@ dependencies {
 	implementation("io.springfox:springfox-swagger-ui:3.0.0")
 
 
+	implementation("io.springfox:springfox-boot-starter:3.0.0")
+
+
 
 }
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
-		jvmTarget = "17"
+		jvmTarget = "11"
 	}
 }
 
