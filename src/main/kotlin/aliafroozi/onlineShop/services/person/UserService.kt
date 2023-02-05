@@ -3,6 +3,7 @@ package aliafroozi.onlineShop.services.person
 import aliafroozi.onlineShop.models.person.Person
 import aliafroozi.onlineShop.models.person.User
 import aliafroozi.onlineShop.repositories.person.UserRepo
+import aliafroozi.onlineShop.utils.Sha256Hash
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -20,9 +21,18 @@ class UserService {
             throw Exception("please enter username")
         if (user.password.isEmpty())
             throw Exception("please enter password")
-        personService.insert(user.person)
 
-        return repository.save(user)
+        val checkAlreadyExist = getByUsername(user.userName)
+        if (checkAlreadyExist != null){
+            throw Exception("This username is already Exists.")
+        }else{
+            personService.insert(user.person)
+            user.password = Sha256Hash.encryptSha256(user.password)
+            val savedData = repository.save(user)
+            savedData.password = ""
+            return savedData
+        }
+
     }
 
     fun update(user: User, currentUser: String): User? {
@@ -45,9 +55,9 @@ class UserService {
             throw Exception("password is empty")
         if (user.password != repeatPass)
             throw Exception("password is not match with repeat pass ")
-        if (data.password != oldPass)
+        if (data.password != Sha256Hash.encryptSha256(oldPass))
             throw Exception(" invalid current password ")
-        data.password = user.password
+        data.password = Sha256Hash.encryptSha256(user.password)
         val saveData = repository.save(data)
         saveData.password = ""
 
@@ -78,7 +88,8 @@ class UserService {
             throw Exception("username is empty")
         if (password.isEmpty())
             throw Exception("password is empty")
-        return repository.findFirstByUserNameAndPassword(username, password)
+        val encryptedPassword = Sha256Hash.encryptSha256(password)
+        return repository.findFirstByUserNameAndPassword(username, encryptedPassword)
 
     }
 }
