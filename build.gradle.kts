@@ -33,14 +33,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
 
-	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
-	implementation("io.springfox:springfox-swagger2:3.0.0")
-
-	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
-	implementation("io.springfox:springfox-swagger-ui:3.0.0")
-
-
-	implementation("io.springfox:springfox-boot-starter:3.0.0")
+//	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+//	implementation("io.springfox:springfox-swagger2:2.9.2")
+//	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+//	implementation("io.springfox:springfox-swagger-ui:3.0.0")
+//	implementation("io.springfox:springfox-boot-starter:3.0.0")
 
 	implementation("com.google.guava:guava:31.1-jre")
 }
