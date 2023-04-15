@@ -1,6 +1,5 @@
 package aliafroozi.onlineShop.services.products
 
-import aliafroozi.onlineShop.models.otherContent.Blog
 import aliafroozi.onlineShop.models.product.Product
 import aliafroozi.onlineShop.repositories.products.ProductRepo
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,7 +43,7 @@ class ProductService {
     }
 
     fun getAll(): List<Product> {
-        return repository.findAll()
+        return repository.findTop20ByOrderByTitleDesc()
     }
 
     fun getAllPaged(pageIndex: Int, pageSize: Int): List<Product> {
@@ -63,6 +62,11 @@ class ProductService {
 
     fun getPopularProducts(): List<Product> {
         return repository.findTop6ByOrderByVisitCountDesc()
+    }
+
+    fun getProductsByCategoryId(categoryId : Long , pageIndex: Int , pageSize: Int): List<Product>? {
+        val pageRequest = PageRequest.of(pageIndex , pageSize , Sort.by("id"))
+        return repository.findAllByCategoryId(categoryId , pageRequest).toList()
     }
 
     fun getAllCount(): Long {

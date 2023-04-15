@@ -65,4 +65,18 @@ class ProductController {
             ServiceResponse(message = "${e.message}", status = HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
+
+    @GetMapping("/category/{categoryId}")
+    fun getByCategory(@PathVariable categoryId: Long , @RequestParam pageIndex :Int, @RequestParam pageSize: Int): ServiceResponse<Product> {
+        return try {
+            val data = service.getProductsByCategoryId(categoryId , pageIndex , pageSize)
+            if (data == null)
+                throw NotFoundException("not found any products with this category") else
+                ServiceResponse(data = data, status = HttpStatus.OK)
+        } catch (e: NotFoundException) {
+            ServiceResponse(message = "${e.message}", status = HttpStatus.NOT_FOUND)
+        } catch (e: Exception) {
+            ServiceResponse(message = "${e.message}", status = HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
 }
