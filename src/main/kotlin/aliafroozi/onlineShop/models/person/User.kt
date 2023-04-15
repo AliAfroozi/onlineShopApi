@@ -15,7 +15,7 @@ data class User(
     var password: String = "",
 
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     var person: Person? = null,
 

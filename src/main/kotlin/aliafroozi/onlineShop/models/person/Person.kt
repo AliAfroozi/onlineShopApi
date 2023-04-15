@@ -16,7 +16,7 @@ class Person(
     var postalCode: String = "",
 
     @JsonIgnore
-    @OneToOne(mappedBy = "person")
+    @OneToOne(mappedBy = "person", fetch = FetchType.LAZY)
     val user: User? = null
 
 )

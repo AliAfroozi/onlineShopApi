@@ -1,6 +1,7 @@
 package aliafroozi.onlineShop.models.product
 
 import aliafroozi.onlineShop.models.invoice.InvoiceItems
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.ColumnDefault
 import org.springframework.boot.context.properties.bind.DefaultValue
 import javax.persistence.*
@@ -30,8 +31,9 @@ data class Product(
     @JoinColumn(name = "category_id")
     var category: ProductCategory? = null,
 
-    @OneToOne(mappedBy = "product")
-    var invoiceItem: InvoiceItems? = null,
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    var invoiceItem: Set<InvoiceItems>? = null,
 
     @ManyToMany
     var sizes: Set<Size>? = null

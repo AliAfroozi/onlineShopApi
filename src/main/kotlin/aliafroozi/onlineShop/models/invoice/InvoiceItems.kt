@@ -6,7 +6,6 @@ import javax.persistence.*
 
 @Entity
 data class InvoiceItems(
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0,
@@ -16,9 +15,11 @@ data class InvoiceItems(
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "invoice_id")
-    var invoice: Invoice?,
+    var invoice: Invoice? = null,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "product_id")
     var product: Product? = null
-)
+) {
+
+}
